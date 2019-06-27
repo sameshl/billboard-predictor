@@ -3,6 +3,7 @@
 # import keras.models
 from keras.models import model_from_json
 import tensorflow as tf
+import pandas as pd
 
 
 def init():
@@ -23,3 +24,22 @@ def init():
     graph = tf.get_default_graph()
 
     return loaded_model, graph
+
+
+def get_standard_scalar():
+    # To export standard scalar with appropriate values
+
+    # Clean the data before applying standard scalar
+    new_data = pd.read_csv('standard_scalar_data.csv')
+    X = new_data.drop('BillboardHit', axis=1)
+    # y = new_data['BillboardHit']
+    mode = pd.get_dummies(X['Mode'], drop_first=True)
+    key = pd.get_dummies(X['Key'], drop_first=True)
+    X.drop(['Mode', 'Key'], inplace=True, axis=1)
+    X = pd.concat([X, mode, key], axis=1)
+
+    # Import standard scalar
+    from sklearn.preprocessing import StandardScaler
+    sc = StandardScaler()
+    X = sc.fit_transform(X)
+    return sc

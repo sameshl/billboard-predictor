@@ -2,11 +2,10 @@ from flask import Flask, render_template, request, redirect, jsonify, \
     url_for, flash
 import spotipy
 import spotipy.util as util
-from collections import namedtuple
-from load import init
+from load import init, get_standard_scalar
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-
+from pprint import pprint
 #     func, distinct
 # from sqlalchemy import create_engine, asc, desc, \
 # from sqlalchemy.orm import sessionmaker
@@ -25,9 +24,10 @@ from sklearn.preprocessing import StandardScaler
 app = Flask(__name__)
 
 # global vars for easy reusability
-global model, graph
+global model, graph, sc
 # initialize these variables
 model, graph = init()
+sc = get_standard_scalar()
 # Connect to database and create database session
 # engine = create_engine('sqlite:///flaskstarter.db')
 # Base.metadata.bind = engine
@@ -43,42 +43,55 @@ def home():
         search = request.form
         artist = search['artist']
         song = search['song']
-        return redirect(url_for('predict', artist=artist, song=song))
+        print("###################", search)
+        choice = request.form['options']
+        return redirect(url_for('predict', artist=artist, song=song,
+                                choice=choice))
     return render_template('index.html')
 
 
-@app.route("/predict/<artist>/<song>")
-def predict(artist, song):
-    features = get_features(artist, song)
+@app.route("/predict")
+def predict():
+    choice = request.args.get('choice')
+    artist = request.args.get('artist')
+    song = request.args.get('song')
+    artist_score = get_artist_score(choice)
+    features = get_features(artist, song, artist_score)
     # print(features)
     data = clean_features(features)
+    # print(data)
     # print(data[0])
     with graph.as_default():
         # perform the prediction
         # song_features = np.array(data.iloc[0])
-        # print(song_features.shape)
+        # print(data)
         # print(song_features)
         pred = model.predict(data)
         # Multipling pred by 100 to get %
         pred = str(pred[0][0] * 100)
         # pred = pred * 100
+        print(pred)
         return pred
 
-    # return render_template('predict.html', song=song, artist=artist, pred=pred)
+    return render_template('predict.html', song=song, artist=artist, pred=pred)
 
 
 def clean_features(features):
+    """Clean the data from spotify"""
     data = pd.DataFrame([features])
     for i in range(0, 12):
+        if i % 2 == 0:
+            j = 0
+        else:
+            j = 1
         temp = {'danceability': 0.8, 'energy': 0.7, 'key': i,
-                'loudness': -3, 'mode': 1,
+                'loudness': -3, 'mode': j,
                 'speechiness': 0.08, 'acousticness': 0.6,
                 'instrumentalness': 0,
                 'liveness': 0.09, 'valence': 0.9, 'tempo': 96,
                 'artist_score': 0}
 
         data = data.append(temp, ignore_index=True)
-    # print(data)
     cols = ['danceability', 'energy', 'key', 'loudness', 'mode', 'speechiness',
             'acousticness', 'instrumentalness', 'liveness', 'valence', 'tempo',
             'artist_score']
@@ -89,18 +102,18 @@ def clean_features(features):
     data = pd.concat([data, mode, key], axis=1)
     # Dropping all other temporary rows before using StandardScaler
     data.drop(data.index[1:], inplace=True)
-    sc = StandardScaler()
-    data = sc.fit_transform(data)
+    data = sc.transform(data)
     return data
 
 
-def get_features(artist, song):
+def get_features(artist, song, artist_score):
+    """Get the spotify data for given song,artist"""
     features = {}
     sp = authenticate()
     try:
         track_info = sp.search(q='artist:' + artist + ' track:' + song,
                                type='track')
-        # print(track_info)
+        # pprint(track_info)
         track_id = track_info['tracks']
         track_id2 = track_id['items']
         if track_id2 != []:
@@ -116,6 +129,7 @@ def get_features(artist, song):
                 track_id4 = track_id3['id']
                 month = year_5[1]
                 feat_t = sp.audio_features(tracks=track_id4)
+                # pprint(feat_t)
                 feat = feat_t[0]
 
                 danceability = feat['danceability']
@@ -134,7 +148,8 @@ def get_features(artist, song):
                     'speechiness': speechiness, 'acousticness': acousticness,
                     'instrumentalness': instrumentalness,
                     'liveness': liveness, 'valence': valence, 'tempo': tempo,
-                    'artist_score': 1}
+                    'artist_score': artist_score}
+        # print(features)
         return features
     except Exception as e:
         print("Could not get data for", song, "by", artist, "Error:", e)
@@ -150,9 +165,15 @@ def authenticate():
     print("Authenticated")
     return sp
 
-    # @app.route("/about")
-    # def about():
-    #     return render_template('about.html', title='About')
+
+def get_artist_score(choice):
+    """Determine the artist score by choice"""
+    if choice == 'Yes':
+        return 1
+    elif choice == 'No':
+        return 0
+    else:
+        return 0.5
 
 
 if __name__ == '__main__':
