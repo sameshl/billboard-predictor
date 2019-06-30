@@ -1,12 +1,12 @@
 
 # import numpy as np
 # import keras.models
-from keras.models import model_from_json
-import tensorflow as tf
 import pandas as pd
 
 
 def init():
+    from keras.models import model_from_json
+    import tensorflow as tf
     json_file = open('./model/model.json', 'r')
     loaded_model_json = json_file.read()
     json_file.close()
@@ -29,6 +29,8 @@ def init():
 def get_standard_scalar():
     # To export standard scalar with appropriate values
 
+    # Read the machine learning model's scaled model data which
+    # needs to be scaled
     # Clean the data before applying standard scalar
     new_data = pd.read_csv('standard_scalar_data.csv')
     X = new_data.drop('BillboardHit', axis=1)

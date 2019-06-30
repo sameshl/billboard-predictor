@@ -37,23 +37,23 @@ class Song:
         cache_token = token.get_access_token()
         # spotify = spotipy.Spotify(cache_token)
         sp = spotipy.Spotify(auth=cache_token)
-        print("Authenticated")
+        # print('Authenticated')
         return sp
 
     @property
     def song_features(self):
-        """Get the spotify data for given song,artist"""
+        """Get the spotify data for given song, artist"""
 
         sp = self.authenticate()
         try:
-            track_info = sp.search(q='artist:' + self.artist + ' track:' +
-                                   self.song,
-                                   type='track')
-            # pprint(track_info)
-            track_id = track_info['tracks']
+            self.track_info = sp.search(q='artist:' + self.artist + ' track:' +
+                                        self.song,
+                                        type='track')
+            # pprint(self.track_info)
+            track_id = self.track_info['tracks']
             track_id2 = track_id['items']
             if track_id2 != []:
-                year = track_info['tracks']
+                year = self.track_info['tracks']
                 year_1 = year['items']
                 year_2 = year_1[0]
                 year_3 = year_2['album']
@@ -94,8 +94,8 @@ class Song:
             # print(features)
             return self.features
         except Exception as e:
-            print("Could not get data for", self.song, "by", self.artist,
-                  "Error:", e)
+            print('Could not get data for', self.song, 'by', self.artist,
+                  'Error:', e)
 
     @song_features.setter
     def song_features(self, features):
@@ -140,7 +140,25 @@ class Song:
         """Get machine learning model ready data"""
         return self.clean_features()
 
+    def extract_trackinfo(self):
+        _ = self.song_features
+        self.song_info()
+        # pprint(self.track_info)
+
+    def song_info(self):
+        """Extract extra song info from track_info"""
+        item = self.track_info['tracks']['items'][0]
+        self.song_name = item['name']
+        self.artist_name = item['artists'][0]['name']
+        self.song_url = item['external_urls']['spotify']
+        self.popularity = item['popularity']
+        self.preview_url = item['preview_url']
+        self.preview_img_urls = item['album']['images'][0]['url']
+        print(self.song_name, self.artist_name, self.song_url,
+              self.popularity, self.preview_url, self.preview_img_urls)
+
 
 if __name__ == '__main__':
-    user_song = Song(artist='Ed Sheeran', song='Shape of You', choice='Yes')
-    print(user_song.data)
+    user_song = Song(artist='the chainsmokers', song='Closer', choice='Yes')
+    # user_song.data
+    user_song.extract_trackinfo()

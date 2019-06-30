@@ -56,6 +56,7 @@ def predict():
 
     # Get data in format for machine learning model
     data = user_song.data
+
     # print(features)
     # print(data)
     # print(data[0])
@@ -68,7 +69,7 @@ def predict():
         # Multipling pred by 100 to get %
         pred = str(pred[0][0] * 100)
         # pred = pred * 100
-        print(pred)
+        # print(pred)
         return pred
 
     return render_template('predict.html', song=song, artist=artist, pred=pred)
