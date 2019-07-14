@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+        <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link rel="stylesheet" type='text/css' href="{{ url_for('static',filename='predict.css') }}">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" type='text/css' href="{{ url_for('static',filename='main_copy.css') }}">
+
+
+<body>
+      <header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+      <div class="container">
+        <p style = "font-family:georgia,garamond,serif;font-size:20px;font-style:oblique;">Some of the features used for prediction are given below</p>
+        <!-- Navbar Right Side -->
+        <div class="navbar-nav">
+          {% if title == 'Prediction' %}
+          <a class="nav-item nav-link" href="/">Wanna try again?</a>
+          {% endif %}
+        </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <div id="pricing-table" class="clear">
+      <div class="plan" id="most-popular">
+          <h3>Prediction<span>{{ pred }}%</span></h3>
+          <a class="signup" href="{{ preview_url }}" target="_blank">Preview Song</a>
+          <ul>
+              <li><b>{{ song_name }}</b></li>
+              <li><i>by </i><b>{{ artist_name }}</b></li>
+          </ul>
+      </div>
+    <div class="plan">
+        <h3>Popularity<span>{{ popularity }}</span></h3>
+        <a class="signup" href="{{ song_url }}" target="_blank">Listen on Spotify</a>
+    </div>
+    <div class="plan">
+        <h3>Danceability<span>{{ song_features['danceability'] }}</span></h3>
+    </div>
+    <div class="plan">
+        <h3>Energy<span>{{ song_features['energy'] }}</span></h3>
+    </div>
+    <div class="plan">
+        <h3>Speechiness<span>{{ song_features['speechiness'] }}</span></h3>
+    </div>
+    <div class="plan">
+        <h3>Acousticness<span>{{ song_features['acousticness'] }}</span></h3>
+    </div>
+    <div class="plan">
+        <h3>Valence<span>{{ song_features['valence'] }}</span></h3>
+    </div>
+    <div class="plan">
+        <h3>Tempo<span>{{ song_features['tempo'] }}</span></h3>
+    </div>
+</div>

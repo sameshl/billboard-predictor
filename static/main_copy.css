@@ -78,3 +78,18 @@ a.article-title:hover {
 .account-heading {
   font-size: 2.5rem;
 }
+/* this is a comment */
+/*  */
+/*  */
+/*  */
+
+.badge {
+  height: 100px;
+  width: 100px;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  border-radius: 50%;
+  background: yellow;
+}
+/* For predict.html */

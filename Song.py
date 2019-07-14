@@ -142,11 +142,12 @@ class Song:
 
     def extract_trackinfo(self):
         _ = self.song_features
-        self.song_info()
         # pprint(self.track_info)
+        return self.song_info()
 
     def song_info(self):
         """Extract extra song info from track_info"""
+
         item = self.track_info['tracks']['items'][0]
         self.song_name = item['name']
         self.artist_name = item['artists'][0]['name']
@@ -154,11 +155,15 @@ class Song:
         self.popularity = item['popularity']
         self.preview_url = item['preview_url']
         self.preview_img_urls = item['album']['images'][0]['url']
-        print(self.song_name, self.artist_name, self.song_url,
-              self.popularity, self.preview_url, self.preview_img_urls)
+
+        return(self.song_name, self.artist_name, self.song_url,
+               self.popularity, self.preview_url, self.preview_img_urls)
 
 
 if __name__ == '__main__':
     user_song = Song(artist='the chainsmokers', song='Closer', choice='Yes')
     # user_song.data
-    user_song.extract_trackinfo()
+    (song_name, artist_name, song_url, popularity, preview_url,
+     preview_img_urls) = user_song.extract_trackinfo()
+    print(song_name, artist_name, song_url, popularity,
+          preview_url, preview_img_urls)

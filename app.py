@@ -4,9 +4,10 @@ from load import init
 from Song import Song
 from forms import SongForm
 
-
-# TODO: add flask form instead of normal form
-#     func, distinct
+# TODO: * prettify the navbar for predict.html
+#       * look into image as background or any other possibility
+#       * add about page and write author info
+#       * add feedback form page and give link to it on predict.html
 # from sqlalchemy import create_engine, asc, desc, \
 # from sqlalchemy.orm import sessionmaker
 # from sqlalchemy.ext.serializer import loads, dumps
@@ -46,7 +47,8 @@ def home():
         choice = form.choice.data
         return redirect(url_for('predict', artist=artist, song=song,
                                 choice=choice))
-    return render_template('index_copy.html', form=form, legend='Predict Song!',
+    return render_template('index_copy.html', form=form,
+                           legend='Predict Song!',
                            title=' ')
 
 
@@ -61,22 +63,28 @@ def predict():
 
     # Get data in format for machine learning model
     data = user_song.data
-
+    song_features = user_song.song_features
+    (song_name, artist_name, song_url, popularity, preview_url,
+     preview_img_urls) = user_song.extract_trackinfo()
+    print(song_url)
     # print(data)
     # print(data[0])
     with graph.as_default():
         # perform the prediction
-        # song_features = np.array(data.iloc[0])
-        # print(data)
-        # print(song_features)
         pred = model.predict(data)
+        pred = "{0:.3f}".format(pred[0][0] * 100)
         # Multipling pred by 100 to get %
-        pred = str(pred[0][0] * 100)
+        # pred = str(pred[0][0] * 100)
         # pred = pred * 100
         # print(pred)
-        return render_template('predict.html', song=song,
-                               artist=artist, pred=pred)
-    return render_template('predict.html', song=song, artist=artist, pred=pred)
+        return render_template('predict_copy.html',
+                               song_name=song_name,
+                               artist_name=artist_name,
+                               song_url=song_url,
+                               preview_img_urls=preview_img_urls,
+                               popularity=popularity, preview_url=preview_url,
+                               pred=pred, song_features=song_features,
+                               title='Prediction')
 
 
 if __name__ == '__main__':

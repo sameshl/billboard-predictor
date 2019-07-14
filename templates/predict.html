@@ -1,12 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8">
-        <title></title>
-    </head>
-    <body>
+
+{% extends "layout.html"%}
+{% block content %}
         {{song}}--------{{ artist }}
-        {{ choice }}
         <h1>Prediction is ----> {{ pred }}</h1>
-    </body>
-</html>
+         <div class="badge">1</div>
+         <div class="badge">1</div>
+{%endblock content%}
