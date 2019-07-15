@@ -11,7 +11,16 @@
 <link rel="stylesheet" type='text/css' href="{{ url_for('static',filename='main_copy.css') }}">
 
 
-<body>
+<style>
+         body {
+         background-image: url("{{ preview_img_urls }}");
+         height: 100%;
+         background-repeat: no-repeat;
+         background-attachment: fixed;
+         background-position: center;
+         background-size: cover;
+     }
+      </style>
       <header class="site-header">
     <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
       <div class="container">
@@ -19,8 +28,9 @@
         <!-- Navbar Right Side -->
         <div class="navbar-nav">
           {% if title == 'Prediction' %}
-          <a class="nav-item nav-link" href="/">Wanna try again?</a>
+          <h5><a class="nav-item nav-link" href="/">Wanna try again?</a></h5>
           {% endif %}
+          <h5><a class="nav-item nav-link" href="/about">About</a></h5>
         </div>
         </div>
       </div>

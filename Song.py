@@ -35,7 +35,7 @@ class Song:
             client_id='578d6e7b02e3421c903fa7794aab9118',
             client_secret='b610ff6ee28b4b359098b97e384d7637')
         cache_token = token.get_access_token()
-        # spotify = spotipy.Spotify(cache_token)
+        spotify = spotipy.Spotify(cache_token)
         sp = spotipy.Spotify(auth=cache_token)
         # print('Authenticated')
         return sp

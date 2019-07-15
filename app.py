@@ -4,8 +4,8 @@ from load import init
 from Song import Song
 from forms import SongForm
 
-# TODO: * prettify the navbar for predict.html
-#       * look into image as background or any other possibility
+# TODO:
+#
 #       * add about page and write author info
 #       * add feedback form page and give link to it on predict.html
 # from sqlalchemy import create_engine, asc, desc, \
@@ -50,6 +50,11 @@ def home():
     return render_template('index_copy.html', form=form,
                            legend='Predict Song!',
                            title=' ')
+
+
+@app.route("/about", methods=['GET'])
+def about():
+    return render_template('about.html')
 
 
 @app.route("/predict")
