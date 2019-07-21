@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, jsonify, \
     url_for, flash
 from load import init
 from Song import Song
-from forms import SongForm
+from forms import SongForm, FeedbackForm
 
 # TODO:
 #
@@ -54,6 +54,11 @@ def home():
 
 @app.route("/about", methods=['GET'])
 def about():
+    form = FeedbackForm()
+    if request.method == 'POST':
+        name = form.name.data
+        message = form.message.data
+        email = form.email.data
     return render_template('about.html')
 
 
