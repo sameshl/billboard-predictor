@@ -32,8 +32,8 @@ class Song:
     def authenticate():
         """Authenticate with spotify api"""
         token = util.oauth2.SpotifyClientCredentials(
-            client_id='578d6e7b02e3421c903fa7794aab9118',
-            client_secret='b610ff6ee28b4b359098b97e384d7637')
+            client_id='3e9662a5afe34512834f7c44eb39e7ab',
+            client_secret='79acff9ee271443a96656c3444bfe4f6')
         cache_token = token.get_access_token()
         spotify = spotipy.Spotify(cache_token)
         sp = spotipy.Spotify(auth=cache_token)
